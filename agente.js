@@ -76,4 +76,5 @@ app.post('/webhook', async (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log('Agente rodando na porta 3000'));
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => console.log(`Agente rodando na porta ${PORT}`));
