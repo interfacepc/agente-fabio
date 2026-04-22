@@ -56,6 +56,7 @@ async function chamarGemini(numero, mensagem) {
 app.post('/webhook', async (req, res) => {
   res.sendStatus(200);
   const evento = req.body;
+  console.log('WEBHOOK RECEBIDO:', JSON.stringify(evento).slice(0, 500));
   if (evento.event !== 'messages.upsert') return;
   const msg = evento.data?.message;
   if (!msg || evento.data?.key?.fromMe) return;
