@@ -3,7 +3,7 @@ const axios = require('axios');
 const app = express();
 app.use(express.json());
 
-const EVOLUTION_URL = 'http://evolution-api.railway.internal:8080';
+const EVOLUTION_URL = 'https://evolution-api-production-0051.up.railway.app';
 const EVOLUTION_KEY = 'fabio-suporte-2026';
 const INSTANCE_NAME = 'fabio';
 const GEMINI_KEY = 'AIzaSyCLJQ4M5eAobXiRctEhIuVlngnrRoaD77Q';
@@ -25,7 +25,10 @@ async function enviar(numero, texto) {
   await axios.post(
     `${EVOLUTION_URL}/message/sendText/${INSTANCE_NAME}`,
     { number: numero, text: texto },
-    { headers: { apikey: EVOLUTION_KEY } }
+    { 
+      headers: { apikey: EVOLUTION_KEY },
+      timeout: 30000
+    }
   );
 }
 
