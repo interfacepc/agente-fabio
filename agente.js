@@ -88,15 +88,13 @@ app.post('/webhook', async (req, res) => {
     console.error('Erro no processamento:', e.message);
   }
 });
+// Rota de Health Check (Obrigatória para o Railway)
+app.get('/', (req, res) => {
+  res.status(200).send('OK');
+});
 
-// ROTA DE HEALTH CHECK (PARA O RAILWAY NÃO DERRUBAR O APP)
-app.get('/', (req, res) => res.send('Agente Online!'));
-app.get('/webhook', (req, res) => res.send('Webhook pronto para receber POST!'));
-
-// INICIALIZAÇÃO DO SERVIDOR
+// Inicialização
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n=================================`);
   console.log(`AGENTE ONLINE NA PORTA ${PORT}`);
-  console.log(`=================================\n`);
 });
