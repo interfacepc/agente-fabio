@@ -86,4 +86,10 @@ app.post('/webhook', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, '0.0.0.0', () => console.log(`Agente Rodando na Porta ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Agente Online na porta ${PORT}`);
+});
+
+// Rota de Health Check para o Railway não derrubar o app
+app.get('/', (req, res) => res.send('OK'));
+
