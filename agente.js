@@ -3,6 +3,7 @@ const axios = require('axios');
 const app = express();
 app.use(express.json());
 
+// CONFIGURAÇÕES
 const EVOLUTION_URL = 'https://evolution-api-production-0051.up.railway.app';
 const EVOLUTION_KEY = 'fabio-suporte-2026';
 const INSTANCE_NAME = 'fabio';
@@ -21,6 +22,7 @@ Regras:
 - Se o cliente disser que NÃO resolveu, responda SOMENTE com: ACIONAR_PLANTONISTA
 - Respostas curtas. Sem formatação markdown.`;
 
+// FUNÇÃO PARA ENVIAR MENSAGEM
 async function enviar(numero, texto ) {
   try {
     await axios.post(
@@ -34,11 +36,13 @@ async function enviar(numero, texto ) {
   }
 }
 
+// FUNÇÃO PARA ACIONAR PLANTONISTA
 async function acionarEdrisio(numeroCliente) {
   await enviar(EDRISIO, `Ola Edrisio! Um cliente precisa de suporte urgente.\nNumero: ${numeroCliente}\nPor favor entre em contato!`);
   return `Entendido! Vou acionar o plantonista Edrisio agora.\nEle vai entrar em contato em breve. Obrigado pela paciencia!`;
 }
 
+// FUNÇÃO PARA FALAR COM O GEMINI
 async function chamarGemini(numero, mensagem) {
   if (!conversas[numero]) conversas[numero] = [];
   conversas[numero].push({ role: 'user', parts: [{ text: mensagem }] });
@@ -56,11 +60,11 @@ async function chamarGemini(numero, mensagem) {
   return resposta;
 }
 
+// ROTA DE WEBHOOK (ONDE CHEGAM AS MENSAGENS)
 app.post('/webhook', async (req, res) => {
-  res.sendStatus(200);
+  res.sendStatus(200); // Responde rápido para a Evolution API não achar que deu erro
   const evento = req.body;
   
-  // Log para sabermos que algo chegou
   console.log('Evento recebido:', evento.event);
 
   if (evento.event !== 'messages.upsert') return;
@@ -85,11 +89,14 @@ app.post('/webhook', async (req, res) => {
   }
 });
 
+// ROTA DE HEALTH CHECK (PARA O RAILWAY NÃO DERRUBAR O APP)
+app.get('/', (req, res) => res.send('Agente Online!'));
+app.get('/webhook', (req, res) => res.send('Webhook pronto para receber POST!'));
+
+// INICIALIZAÇÃO DO SERVIDOR
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Agente Online na porta ${PORT}`);
+  console.log(`\n=================================`);
+  console.log(`AGENTE ONLINE NA PORTA ${PORT}`);
+  console.log(`=================================\n`);
 });
-
-// Rota de Health Check para o Railway não derrubar o app
-app.get('/', (req, res) => res.send('OK'));
-
